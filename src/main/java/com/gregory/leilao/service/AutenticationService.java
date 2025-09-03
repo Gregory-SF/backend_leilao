@@ -28,10 +28,7 @@ public class AutenticationService {
     
     @Autowired
     private PessoaRepository pessoaRepository;
-    
-    @Autowired
-	BCryptPasswordEncoder enconder;
-
+     
     public PessoaResponseDTO autenticar(LoginDTO pessoa) {
         Authentication authentication = authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(pessoa.getEmail(), pessoa.getSenha())
@@ -44,16 +41,6 @@ public class AutenticationService {
         dto.setToken(jwtService.generateToken(authentication.getName()));
         return dto;
     }
-    
-    protected String gerarSenha(String senha) {
-    	return enconder.encode(senha);
-    }
-    
-    protected boolean senhaBate(LoginDTO dto) {
-    	String senhaBanco = pessoaRepository.findSenhaByEmail(dto.getEmail());
-    	return enconder.matches(dto.getSenha(), senhaBanco);
-    }
-    
-    
+
 }
 

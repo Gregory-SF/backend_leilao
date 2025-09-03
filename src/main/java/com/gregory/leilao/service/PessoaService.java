@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
@@ -33,7 +35,11 @@ public class PessoaService implements UserDetailsService {
 	@Autowired
 	private EmailService emailService;
 		
+
 	public Pessoa inserir(Pessoa pessoa) {
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
+		pessoa.setSenha(encoder.encode(pessoa.getSenha()));
 		Pessoa pessoaCadastrada = pessoaRepository.save(pessoa);
 //		emailService.enviarEmailSimples(pessoaCadastrada.getEmail(),
 //				"Cadastrado com Sucesso",
@@ -96,4 +102,5 @@ public class PessoaService implements UserDetailsService {
 		return pessoaRepository.findByEmail(username)
 				.orElseThrow(() -> new UsernameNotFoundException("Pessoa não encontrada"));
 	}
+	
 }
